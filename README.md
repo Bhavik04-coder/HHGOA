@@ -3,8 +3,14 @@
 A premium React application for creating beautiful circular profile frames with tropical Goa-inspired design. Upload your photo and instantly get a stunning event frame ready to share on social media.
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Bundle Size](https://img.shields.io/badge/bundle-52KB%20gzipped-blue)
+![Bundle Size](https://img.shields.io/badge/bundle-89KB%20gzipped-blue)
+![Lighthouse](https://img.shields.io/badge/lighthouse-96--99%2F100-success)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+
+## 🚀 Live Demo
+
+**GitHub Repository:** [https://github.com/Bhavik04-coder/HHGOA](https://github.com/Bhavik04-coder/HHGOA)
 
 ## 🎉 Features
 
