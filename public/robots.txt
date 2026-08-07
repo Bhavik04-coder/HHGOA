@@ -1,0 +1,8 @@
+# robots.txt for HH Goa 2026 Frame Generator
+# Allow all search engines to index the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location (update when deployed)
+# Sitemap: https://yourdomain.com/sitemap.xml
