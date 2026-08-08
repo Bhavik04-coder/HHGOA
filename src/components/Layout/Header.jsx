@@ -1,39 +1,13 @@
 import React from 'react'
-import { Menu } from 'lucide-react'
 
-const Header = () => {
-  return (
-    <header className="w-full glass border-b border-white/10 backdrop-blur-xl sticky top-0 z-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo and Title */}
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-goa-orange via-goa-purple to-goa-blue rounded-xl flex items-center justify-center shadow-lg" role="img" aria-label="HH Goa 2026 Logo">
-              <span className="text-2xl font-bold text-white" aria-hidden="true">HH</span>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold gradient-text">HH Goa 2026</h1>
-              <p className="text-xs text-gray-400">Frame Generator</p>
-            </div>
-          </div>
-          
-          {/* Desktop Navigation - Hidden since not functional */}
-          <nav className="hidden md:flex items-center space-x-8" aria-label="Main navigation">
-            {/* Navigation removed - Add real links when routes are implemented */}
-          </nav>
-
-          {/* Mobile Menu Button - Hidden since navigation is removed */}
-          {/* <button 
-            className="md:hidden text-gray-300 hover:text-goa-orange transition-colors"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-          >
-            <Menu className="w-6 h-6" />
-          </button> */}
-        </div>
-      </div>
-    </header>
-  )
-}
+const Header = () => (
+  <header className="relative z-20 border-b border-yellow-300/40">
+    <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
+      <a href="#top" className="hh-mono text-xs font-bold leading-none sm:text-sm">2:47 PM<br />STUDIO</a>
+      <div className="hidden items-center gap-8 sm:flex"><span className="hh-label">BUILDER ID / 2026</span><a href="https://hhgoa.com/" target="_blank" rel="noreferrer" className="hh-label hover:text-pink-400">HH GOA ↗</a></div>
+      <a href="#generator" className="hh-button text-xs">MAKE YOUR ID</a>
+    </div>
+  </header>
+)
 
 export default Header

@@ -1,9 +1,8 @@
-import React, { useState, useCallback, memo } from 'react'
-import { Download, Share2, Trash2, RefreshCw, Upload, Sparkles, Image as ImageIcon } from 'lucide-react'
+import React, { useCallback, useState } from 'react'
+import { Download, RefreshCw, Share2, Trash2, Upload } from 'lucide-react'
 import ImageUpload from '../Upload/ImageUpload'
-import LivePreview from '../Preview/LivePreview'
-import PremiumLoader from '../UI/PremiumLoader'
-import { downloadFramedImage } from '../../utils/downloadFrame'
+import BuilderCard from '../BuilderCard/BuilderCard'
+import { downloadBuilderCard } from '../../utils/downloadFrame'
 import { shareToX, getDefaultShareText } from '../../utils/shareToX'
 import { useToast } from '../../contexts/ToastContext'
 
@@ -11,200 +10,43 @@ const Hero = () => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [isDownloading, setIsDownloading] = useState(false)
+  const [name, setName] = useState('')
+  const [role, setRole] = useState('')
   const toast = useToast()
-
-  const handleImageSelect = useCallback((file, dataUrl) => {
-    setSelectedImage(file)
-    setImagePreview(dataUrl)
-    toast.success('Image uploaded successfully! 🎉')
-  }, [toast])
-
-  const handleRemoveImage = useCallback(() => {
-    setSelectedImage(null)
-    setImagePreview(null)
-    toast.info('Image removed')
-  }, [toast])
-
-  const handleDownload = useCallback(async () => {
-    if (!imagePreview) return
-    
-    setIsDownloading(true)
-    toast.info('Generating your frame...', 2000)
-    
-    try {
-      await downloadFramedImage(imagePreview, 'HH-Goa-2026-Frame.png')
-      toast.success('Frame downloaded successfully! 🎉')
-    } catch (error) {
-      console.error('Download failed:', error)
-      toast.error('Failed to download. Please try again.')
-    } finally {
-      setIsDownloading(false)
-    }
-  }, [imagePreview, toast])
-
-  const handleShareToX = useCallback(() => {
-    const shareText = getDefaultShareText()
-    shareToX(shareText)
-    toast.success('Opening X... Share your excitement! 🐦')
-  }, [toast])
-
-  return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-20 flex-1 relative z-10">
-      <div className="max-w-6xl mx-auto">
-        {/* Hero Title Section */}
-        <div className="text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in">
-          <div className="inline-block mb-4 sm:mb-6 px-4 sm:px-6 py-2 sm:py-3 glass-card animate-float">
-            <div className="flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-goa-orange animate-pulse" />
-              <span className="gradient-text-animate text-xs sm:text-sm font-bold tracking-wide">OFFICIAL FRAME GENERATOR</span>
-              <Sparkles className="w-4 h-4 text-goa-purple animate-pulse" />
-            </div>
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-6 leading-tight px-2 animate-scale-pulse">
-            <span className="gradient-text-animate goa-glow">HH Goa 2026</span>
-          </h1>
-          
-          <p className="text-base sm:text-xl md:text-2xl text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto font-light px-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Create your official profile frame in seconds.
-          </p>
+  const titleOptions = ['Signal Chaser', 'Ship It Specialist', 'Terminal Nomad', 'Build Station Regular', 'Idea-to-Impact Operator', 'Ocean-side Debugger']
+  const builderTitle = titleOptions[((name + role).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0)) % titleOptions.length]
+  const handleImageSelect = useCallback((file, url) => { setSelectedImage(file); setImagePreview(url); toast.success('Builder image uploaded.') }, [toast])
+  const removeImage = useCallback(() => { setSelectedImage(null); setImagePreview(null) }, [])
+  const download = useCallback(async () => { if (!imagePreview || !name.trim()) return; setIsDownloading(true); try { await downloadBuilderCard(imagePreview, { name: name.trim(), role: role.trim(), title: builderTitle }); toast.success('Builder ID downloaded — ready to post.') } catch { toast.error('Download failed. Please try again.') } finally { setIsDownloading(false) } }, [imagePreview, name, role, builderTitle, toast])
+  const share = useCallback(() => { shareToX(`My HH Goa 2026 Builder ID is ready.\n\n${builderTitle} · ${role || 'builder'}\n\nDownload your card, attach it here, and show what you’re building.\n\n#FrameInGoa #HHGoa2026`); toast.info('Attach your downloaded Builder ID to finish the post.') }, [builderTitle, role, toast])
+  return <section id="top" className="mx-auto max-w-7xl px-5 pb-16 pt-12 sm:px-8 sm:pt-16">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-y border-yellow-300/40 py-3 hh-label"><span>GOA, INDIA</span><span>28 — 31 OCT 2026</span><span>FRAME / ID GENERATOR</span></div>
+    <div className="relative py-12 text-center sm:py-16">
+      <p className="hh-label mb-4">TASK #1 — BUILDER ID</p>
+      <h1 className="hh-display text-[17vw] leading-[.72] text-yellow-300 sm:text-[9.8rem] lg:text-[11.8rem]">HACKER HOUSE</h1>
+      <div className="hh-pink relative -mt-3 text-6xl font-black leading-none sm:-mt-6 sm:text-8xl">गोवा</div>
+      <p className="mx-auto mt-7 max-w-xl text-sm leading-6 text-yellow-100/80 sm:text-base">Make a shareable HH Goa Builder ID in seconds. Upload your photo, download your card, and show the internet what you’re building.</p>
+    </div>
+    <div id="generator" className="grid gap-7 lg:grid-cols-[.85fr_1.15fr] lg:items-start">
+      <div className="hh-panel p-5 sm:p-7">
+        <div className="mb-6 flex items-center justify-between"><span className="hh-label">01 / Builder details</span><Upload className="h-5 w-5" /></div>
+        <div className="mb-6 grid gap-4">
+          <label className="block"><span className="hh-label">Name <b className="text-pink-400">*</b></span><input value={name} onChange={e => setName(e.target.value.slice(0, 32))} placeholder="YOUR NAME" className="mt-2 w-full border-b border-yellow-300/60 bg-transparent px-0 py-3 font-serif text-2xl text-yellow-200 outline-none placeholder:text-yellow-200/35 focus:border-pink-400" /></label>
+          <label className="block"><span className="hh-label">Stack / role</span><input value={role} onChange={e => setRole(e.target.value.slice(0, 42))} placeholder="FRONTEND · DESIGN · AI" className="mt-2 w-full border-b border-yellow-300/60 bg-transparent px-0 py-3 hh-mono text-sm uppercase text-yellow-200 outline-none placeholder:text-yellow-200/35 focus:border-pink-400" /></label>
+          <div className="border border-pink-400/70 bg-pink-500/10 p-3"><span className="hh-label">Generated builder title</span><p className="mt-1 font-serif text-lg text-yellow-200">{builderTitle}</p></div>
         </div>
-
-        {/* Upload Section */}
-        <div className="mb-8 sm:mb-12 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <ImageUpload
-            onImageSelect={handleImageSelect}
-            selectedImage={selectedImage}
-            imagePreview={imagePreview}
-          />
-        </div>
-
-        {/* Live Preview Section */}
-        <div className="max-w-4xl mx-auto mb-8 sm:mb-12 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <div className="glass-card glass-card-hover p-4 sm:p-6 md:p-8 lg:p-12 goa-glow relative overflow-hidden">
-            {/* Animated shimmer overlay */}
-            <div className="absolute inset-0 animate-shimmer opacity-50 pointer-events-none"></div>
-            
-            <div className="relative z-10">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 sm:mb-8 gradient-text-animate flex items-center justify-center gap-3">
-                <ImageIcon className="w-6 h-6 sm:w-8 sm:h-8" />
-                Live Preview
-                <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 animate-pulse" />
-              </h2>
-              
-              {isDownloading ? (
-                <div className="py-20">
-                  <PremiumLoader message="Generating your premium frame..." size="xl" />
-                </div>
-              ) : (
-                <LivePreview imagePreview={imagePreview} frameMode="circular" />
-              )}
-
-              {/* Action Buttons */}
-              {imagePreview && !isDownloading && (
-                <div className="flex flex-col items-center gap-4 sm:gap-6 mt-6 sm:mt-8">
-                  {/* Primary Actions Row */}
-                  <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
-                    <button
-                      onClick={handleDownload}
-                      disabled={isDownloading}
-                      className="btn-primary w-full sm:w-auto min-h-[56px] group"
-                    >
-                      <Download className="w-5 h-5 sm:w-6 sm:h-6 group-hover:animate-bounce" />
-                      <span>Download PNG</span>
-                    </button>
-
-                    <button
-                      onClick={handleShareToX}
-                      className="w-full sm:w-auto min-h-[56px] px-6 sm:px-8 py-4 bg-black hover:bg-gray-900 text-white font-bold rounded-xl transition-all duration-300 inline-flex items-center justify-center space-x-3 active:scale-95 border border-gray-700 hover:border-gray-600 touch-manipulation group relative overflow-hidden"
-                    >
-                      <Share2 className="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-12 transition-transform" />
-                      <span>Share on X</span>
-                    </button>
-                  </div>
-
-                  {/* Secondary Actions Row */}
-                  <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
-                    <button
-                      onClick={handleRemoveImage}
-                      className="btn-secondary w-full sm:w-auto min-h-[48px] group"
-                    >
-                      <Trash2 className="w-4 h-4 sm:w-5 sm:h-5 group-hover:text-red-400 transition-colors" />
-                      <span>Remove Image</span>
-                    </button>
-                    
-                    <button
-                      onClick={handleRemoveImage}
-                      className="btn-secondary w-full sm:w-auto min-h-[48px] group"
-                    >
-                      <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-180 transition-transform duration-500" />
-                      <span className="hidden sm:inline">Upload New Photo</span>
-                      <span className="sm:hidden">New Photo</span>
-                    </button>
-                  </div>
-
-                  {/* Share Instructions */}
-                  <div className="text-center mt-2 px-4">
-                    <p className="text-xs sm:text-sm text-gray-400 flex flex-col sm:flex-row items-center justify-center gap-2">
-                      <Sparkles className="w-4 h-4 text-goa-orange flex-shrink-0 animate-pulse" />
-                      <span>Tip: Download your frame first, then share on X and attach the image manually</span>
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Feature Info */}
-        <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
-          <FeatureCard
-            icon={<Upload />}
-            title="Drag & Drop"
-            description="Simply drag your photo or click to upload"
-            color="from-goa-orange to-goa-sunset"
-            delay="0.8s"
-          />
-          <FeatureCard
-            icon={<Download />}
-            title="Download HD"
-            description="Get your framed photo in high quality 1080x1080"
-            color="from-goa-purple to-goa-blue"
-            delay="1s"
-          />
-          <FeatureCard
-            icon={<Share2 />}
-            title="Share on X"
-            description="Share your excitement for HH Goa 2026 instantly"
-            color="from-goa-blue to-goa-ocean"
-            delay="1.2s"
-          />
-        </div>
+        <div className="mb-6 flex items-center justify-between"><span className="hh-label">02 / Upload image</span></div>
+        <ImageUpload onImageSelect={handleImageSelect} selectedImage={selectedImage} imagePreview={imagePreview} />
+        <div className="mt-7 border-t border-yellow-300/30 pt-5 text-xs leading-5 text-yellow-100/70"><span className="hh-label mr-2">FORMAT</span>JPG, PNG, HEIC · MAX 10 MB<br /><span className="hh-label mr-2">MODE</span>YOUR PHOTO STAYS ON YOUR DEVICE.</div>
       </div>
-    </section>
-  )
-}
-
-const FeatureCard = memo(({ icon, title, description, color, delay }) => {
-  return (
-    <div 
-      className="glass-card glass-card-hover p-5 sm:p-6 active:scale-95 transition-all duration-500 group touch-manipulation relative overflow-hidden animate-fade-in"
-      style={{ animationDelay: delay }}
-    >
-      {/* Hover gradient overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-      
-      <div className="relative z-10">
-        <div className={`text-white mb-3 sm:mb-4 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-          {React.cloneElement(icon, { className: 'w-6 h-6 sm:w-7 sm:h-7' })}
-        </div>
-        <h3 className="text-lg sm:text-xl font-semibold text-gray-100 mb-1 sm:mb-2 group-hover:text-white transition-colors">{title}</h3>
-        <p className="text-sm sm:text-base text-gray-400 group-hover:text-gray-300 transition-colors">{description}</p>
+      <div className="hh-panel relative p-5 sm:p-7">
+        <div className="mb-5 flex items-center justify-between"><span className="hh-label">03 / Preview Builder ID</span><span className="hh-label text-pink-400">LIVE</span></div>
+        <div className="mx-auto max-w-md"><BuilderCard imagePreview={imagePreview} name={name} role={role} title={builderTitle} /></div>
+        {imagePreview && name.trim() ? <div className="mt-7 grid gap-3 sm:grid-cols-2"><button onClick={download} disabled={isDownloading} className="hh-button">{isDownloading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}{isDownloading ? 'Generating' : 'Download PNG'}</button><button onClick={share} className="hh-button hh-button--ghost"><Share2 className="h-4 w-4" />Share on X</button><button onClick={removeImage} className="hh-button hh-button--ghost sm:col-span-2"><Trash2 className="h-4 w-4" />Reset image</button></div> : <p className="mt-7 text-center hh-label text-yellow-100/60">{imagePreview ? 'Add your name to unlock download' : 'Add your details and photo to unlock your Builder ID'}</p>}
       </div>
     </div>
-  )
-})
-
-FeatureCard.displayName = 'FeatureCard'
-
-export default memo(Hero)
+    <div className="mt-12 grid gap-px overflow-hidden border border-yellow-300/40 bg-yellow-300/40 sm:grid-cols-3"><Info n="01" title="UPLOAD" copy="Drop any portrait. We’ll prepare it for the card." /><Info n="02" title="DOWNLOAD" copy="Get a crisp 1080 × 1350 Builder ID PNG." /><Info n="03" title="SIGNAL" copy="Post it on X with #FrameInGoa." /></div>
+  </section>
+}
+const Info = ({ n, title, copy }) => <div className="bg-[#00653a] p-6"><span className="hh-label text-pink-400">{n}</span><h2 className="mt-5 hh-mono text-lg font-bold">{title}</h2><p className="mt-2 text-sm leading-5 text-yellow-100/75">{copy}</p></div>
+export default Hero
